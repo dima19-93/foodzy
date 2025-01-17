@@ -23,11 +23,11 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i diplom/ssl/privkey.pem ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
           docker stop new-apples || true
           docker rm new-apples || true
-          docker run -d --name new-apples -p 80:80 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+          docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom/ssl:/etc/ssl -v /diplom/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         EOF
 
 
