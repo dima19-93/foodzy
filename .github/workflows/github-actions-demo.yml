@@ -23,7 +23,11 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh -o StrictHostKeyChecking=no -i diplom/ssl/privkey.pem ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > privkey.pem
+        echo "${{ secrets.SSL_PRIVKEY }}" > ssl_privkey.pem 
+        echo "${{ secrets.SSL_FULLCHAIN }}" > ssl_fullchain.pem
+        chmod 600 privkey.pem
+        ssh -o StrictHostKeyChecking=no -i privkey.pem ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
           docker stop new-apples || true
           docker rm new-apples || true
