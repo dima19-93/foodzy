@@ -26,15 +26,22 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
         chmod 600 id_rsa
         ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
+          echo "Создание каталога /diplom_work/ssl"
           sudo mkdir -p /diplom_work/ssl
+          echo "Изменение прав доступа к каталогу /diplom_work/ssl"
           sudo chmod 755 /diplom_work/ssl
           echo "${{ secrets.SSL_PRIVKEY }}" > /diplom_work/ssl/ssl_privkey.pem
+          echo "Создание файла сертификата"
           echo "${{ secrets.SSL_FULLCHAIN }}" > /diplom_work/ssl/ssl_fullchain.pem
+          echo "Изменение прав доступа к файлам ключа и сертификата"
           sudo chmod 600 /diplom_work/ssl/ssl_privkey.pem
           sudo chmod 600 /diplom_work/ssl/ssl_fullchain.pem
+          echo "Загрузка Docker-образа"
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+          echo "Остановка и удаление старого контейнера"
           docker stop new-apples || true
           docker rm new-apples || true
+          echo "Запуск нового контейнера"
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         EOF
 
