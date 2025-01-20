@@ -27,7 +27,7 @@ jobs:
         echo "${{ secrets.SSL_PRIVKEY }}" > ssl_privkey.pem 
         echo "${{ secrets.SSL_FULLCHAIN }}" > ssl_fullchain.pem
         chmod 600 privkey.pem
-        ssh -o StrictHostKeyChecking=no -i privkey.pem ubuntu@${{ secrets.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i privkey.pem ubuntuserv@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
           docker stop new-apples || true
           docker rm new-apples || true
