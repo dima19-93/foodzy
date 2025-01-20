@@ -23,11 +23,11 @@ jobs:
 
     - name: Deploy to server
       run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > privkey.pem
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
         echo "${{ secrets.SSL_PRIVKEY }}" > ssl_privkey.pem 
         echo "${{ secrets.SSL_FULLCHAIN }}" > ssl_fullchain.pem
-        chmod 600 privkey.pem
-        ssh -tt -o StrictHostKeyChecking=no -i privkey.pem adminserver@${{ secrets.SERVER_IP }} << 'EOF'
+        chmod 600 id_rsa
+        ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
           docker stop new-apples || true
           docker rm new-apples || true
