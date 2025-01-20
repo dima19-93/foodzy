@@ -24,14 +24,18 @@ jobs:
     - name: Deploy to server
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
-        echo "${{ secrets.SSL_PRIVKEY }}" > ssl_privkey.pem 
-        echo "${{ secrets.SSL_FULLCHAIN }}" > ssl_fullchain.pem
         chmod 600 id_rsa
         ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
+          sudo mkdir -p /diplom_work/ssl
+          sudo chmod 755 /diplom_work/ssl
+          echo "${{ secrets.SSL_PRIVKEY }}" > /diplom_work/ssl/ssl_privkey.pem
+          echo "${{ secrets.SSL_FULLCHAIN }}" > /diplom_work/ssl/ssl_fullchain.pem
+          sudo chmod 600 /diplom_work/ssl/ssl_privkey.pem
+          sudo chmod 600 /diplom_work/ssl/ssl_fullchain.pem
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
           docker stop new-apples || true
           docker rm new-apples || true
-          docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom/ssl:/etc/ssl -v /diplom/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+          docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         EOF
 
 
