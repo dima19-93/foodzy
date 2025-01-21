@@ -1,5 +1,3 @@
-
-   
 name: GitHub Actions Demo
 
 on:
@@ -27,14 +25,16 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         SERVER_IP: ${{ secrets.SERVER_IP }}
+        SSL_PRIVKEY: ${{ secrets.SSL_PRIVKEY }}
+        SSL_FULLCHAIN: ${{ secrets.SSL_FULLCHAIN }}
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
         chmod 600 id_rsa
         ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
           sudo mkdir -p /diplom_work/ssl
           sudo chmod 755 /diplom_work/ssl
-          echo "${{ secrets.SSL_PRIVKEY }}" | sudo tee /diplom_work/ssl/privkey.pem > /dev/null
-          echo "${{ secrets.SSL_FULLCHAIN }}" | sudo tee /diplom_work/ssl/fullchain.pem > /dev/null
+          echo "$SSL_PRIVKEY" | sudo tee /diplom_work/ssl/privkey.pem > /dev/null
+          echo "$SSL_FULLCHAIN" | sudo tee /diplom_work/ssl/fullchain.pem > /dev/null
           sudo chmod 600 /diplom_work/ssl/privkey.pem
           sudo chmod 600 /diplom_work/ssl/fullchain.pem
           docker pull ${DOCKER_USERNAME}/foodzy:latest
@@ -42,3 +42,5 @@ jobs:
           docker rm new-apples || true
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${DOCKER_USERNAME}/foodzy:latest
         EOF
+
+   
