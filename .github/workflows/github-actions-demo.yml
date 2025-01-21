@@ -37,7 +37,7 @@ jobs:
           sudo chmod 600 /diplom_work/ssl/privkey.pem
           sudo chmod 600 /diplom_work/ssl/fullchain.pem
           echo "Загрузка Docker-образа"
-          docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+          docker pull ${DOCKER_USERNAME}/foodzy:latest
           echo "Остановка и удаление старого контейнера"
           docker stop new-apples || true
           docker rm new-apples || true
