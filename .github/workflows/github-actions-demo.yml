@@ -27,7 +27,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/dima70593/foodzy:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
 
     - name: Deploy to server
       env:
@@ -38,11 +38,11 @@ jobs:
         echo "$SSH_PRIVATE_KEY" > id_rsa
         chmod 600 id_rsa
         ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull $DOCKER_USERNAME/dima70593/foodzy:latest
+          docker pull $DOCKER_USERNAME/foodzy:latest
           docker stop apples || true
           docker rm apples || true
-          docker run -d --name apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem $DOCKER_USERNAME/your-repo:latest
-          EOF
+          docker run -d --name apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem $DOCKER_USERNAME/foodzy:latest
+        EOF
 
 
         
