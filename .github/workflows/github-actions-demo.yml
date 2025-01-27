@@ -27,7 +27,7 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
     - name: Create environment file 
-      run: echo "MY_SITE=some_value" >> $GITHUB_ENV
+      run: echo "MY_SITE=https://apples.foodzy.pp.ua" >> $GITHUB_ENV
     - name: Use environment variable
       run: echo "The value of MY_SITE is $MY_SITE"
     - name: Deploy to server
