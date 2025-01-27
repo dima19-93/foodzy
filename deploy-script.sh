@@ -15,3 +15,4 @@ ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@$SERVER_IP << 'EOF'
   docker rm new-apples || true
   docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem $DOCKER_USERNAME/foodzy:latest
 EOF 
+ 
