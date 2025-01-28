@@ -34,7 +34,16 @@ jobs:
       run: echo "MY_SITE=https://apples.foodzy.pp.ua" >> $GITHUB_ENV
     - name: Use environment variable
       run: echo "The value of MY_SITE is $MY_SITE"
-   
+    - name: Copy deploy script to VM
+      run: scp -i id_rsa deploy-script.sh adminserver@${{ secrets.SERVER_IP }}:/home/adminserver/diplom
+
+    - name: Run deploy script on VM
+      run: |
+       ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
+       chmod +x /home/adminserver/diplom/deploy-script.sh
+       /home/adminserver/diplom/deploy-script.sh
+       EOF
+
       
 
 
