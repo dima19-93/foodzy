@@ -1,5 +1,4 @@
 cd /home/adminserver/diplom 
-echo "Using Docker username: $DOCKER_USERNAME" 
 docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
 
 docker stop new-apples || true
