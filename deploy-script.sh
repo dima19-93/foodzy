@@ -17,3 +17,4 @@ ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@$SERVER_IP << 'EOF'
 EOF 
  
  
+ 
