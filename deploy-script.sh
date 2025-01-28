@@ -11,6 +11,6 @@ docker run -d \
   -p 443:443 \
   -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         EOF
-      
+       
  
  
