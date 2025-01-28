@@ -1,18 +1,17 @@
 name: Deploy Website
 
 on: 
- push:
-   branches:
-     - main
-  
+  push:
+    branches:
+      - main 
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3 
+      uses: actions/checkout@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -29,18 +28,18 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
-   
+
     - name: Create environment file 
       run: echo "MY_SITE=https://apples.foodzy.pp.ua" >> $GITHUB_ENV
+
     - name: Use environment variable
       run: echo "The value of MY_SITE is $MY_SITE"
-   
+
     - name: Deploy to server
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         SERVER_IP: ${{ secrets.SERVER_IP }}
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      
       run: |
         echo "$SSH_PRIVATE_KEY" > id_rsa
         chmod 600 id_rsa
@@ -50,4 +49,12 @@ jobs:
           docker rm new-apples || true
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         EOF
-      
+    - name: Copy deploy script to VM
+      run: scp -i id_rsa deploy.sh adminserver@${{ secrets.SERVER_IP }}:/home/adminserver/diplom
+
+    - name: Run deploy script on VM
+      run: |
+        ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
+          chmod +x /home/adminserver/diplom/deploy.sh
+          /home/adminserver/diplom/deploy.sh
+        EOF
