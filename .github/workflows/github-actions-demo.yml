@@ -26,7 +26,7 @@ jobs:
       run: sleep 30
 
     - name: Run ZAP scan
-      run: docker exec security-site zap-cli quick-scan https://apples.foodzy.pp.ua
+      run: docker exec security-site zap-full-scan.py -t https://apples.foodzy.pp.ua
 
     - name: Stop ZAP
       run: docker stop security-site
