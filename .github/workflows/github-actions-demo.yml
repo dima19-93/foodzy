@@ -44,7 +44,7 @@ jobs:
       run: |
         echo "$SSH_PRIVATE_KEY" > id_rsa
         chmod 600 id_rsa
-        ssh -tt -o StrictHostKeyChecking=no -i id_rsa 51.12.56.226@${{ secrets.SERVER_IP }} << 'EOF'
+        ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
            docker stop new-apples || true
            docker rm new-apples || true
