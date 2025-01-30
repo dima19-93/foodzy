@@ -20,10 +20,10 @@ jobs:
       run: docker run -d --name new-apples -p 80:80 -p 443:443 foodzy:latest 
 
     - name: Start ZAP
-      run: docker run -d --name security-site -p 8080:8080  ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
+      run: docker run -d --name security-site -p 8080:8080 -m 4g  ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
 
     - name: Wait for ZAP to start
-      run: sleep 30
+      run: sleep 60
 
     - name: Run ZAP scan
       run: docker exec security-site zap-full-scan.py -t https://apples.foodzy.pp.ua
