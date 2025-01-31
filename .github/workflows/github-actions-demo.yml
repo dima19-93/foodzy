@@ -7,7 +7,7 @@ on:
   
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-server 22.04
 
     steps:
     - name: Checkout repository
@@ -29,21 +29,16 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
    
-    - name: Create environment file 
-      run: echo "MY_SITE=https://apples.foodzy.pp.ua" >> $GITHUB_ENV
-    - name: Use environment variable
-      run: echo "The value of MY_SITE is $MY_SITE"
-   
     - name: Deploy to server
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        SERVER_IP: ${{ secrets.SERVER_IP }}
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SERVER_IP: ${{ secrets.SERVER_IP_ADD }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIV_KEY }}
       
       run: |
-        echo "$SSH_PRIVATE_KEY" > id_rsa
+        echo "$SSH_PRIV_KEY" > id_rsa
         chmod 600 id_rsa
-        ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP }} << 'EOF'
+        ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP_ADD }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
           docker stop new-apples || true
           docker rm new-apples || true
