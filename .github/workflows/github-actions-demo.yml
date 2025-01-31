@@ -29,17 +29,10 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
    
-    - name: Start ZAP
-      run: docker run -d --name security-site -p 8080:8080 -v $(pwd):/zap/wrk -m 4g ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
-
-    - name: Wait for ZAP to start
-      run: sleep 60
-
-    - name: Run ZAP quick scan
-      run: docker exec security-site zap-baseline.py -t https://apples.foodzy.pp.ua 
-
-    - name: Stop ZAP
-      run: docker stop security-site
+    - name: Create environment file 
+      run: echo "MY_SITE=https://apples.foodzy.pp.ua" >> $GITHUB_ENV
+    - name: Use environment variable
+      run: echo "The value of MY_SITE is $MY_SITE"
    
     - name: Deploy to server
       env:
@@ -57,5 +50,16 @@ jobs:
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         EOF
 
-  
+    - name: Start ZAP
+      run: docker run -d --name security-site -p 8080:8080 -m 4g ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
+
+    - name: Wait for ZAP to start
+      run: sleep 60
+
+    - name: Run ZAP quick scan
+      run: docker exec security-site zap-baseline.py -t https://apples.foodzy.pp.ua
+
+    - name: Stop ZAP
+      run: docker stop security-site
+
 
