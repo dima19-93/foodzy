@@ -37,7 +37,7 @@ jobs:
       run: sleep 60
 
     - name: Run ZAP quick scan
-      run: docker exec zap zap-baseline.py -t https://apples.foodzy.pp.ua
+      run: docker exec zap zap-baseline.py -t https://apples.foodzy.pp.ua /home/zap/zap_out.json 
 
     - name: Stop ZAP
       run: docker stop zap
