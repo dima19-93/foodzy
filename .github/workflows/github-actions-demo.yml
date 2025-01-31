@@ -37,17 +37,11 @@ jobs:
       run: sleep 60
    
     - name: Create directory for ZAP output
-      run: docker exec zap mkdir -p /home/zap
-
-    - name: Create directory for ZAP output
       run: docker exec zap mkdir -p /zap/wrk
 
     - name: Run ZAP quick scan
-      run: docker exec zap zap-baseline.py -t https://apples.foodzy.pp.ua -J /home/zap/zap_out.json 
+      run: docker exec zap zap-baseline.py -t https://apples.foodzy.pp.ua -J /zap/wrk/zap_out.json
     
-    - name: Check ZAP output
-      run: docker exec zap cat /home/zap/zap_out.json
-
     - name: Check ZAP output
       run: docker exec zap cat /zap/wrk/zap_out.json
    
