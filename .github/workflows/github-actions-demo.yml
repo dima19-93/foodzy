@@ -28,7 +28,12 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
-   
+    
+    - name: Start ssh-agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIV_KEY }}
+    
     - name: Deploy to server
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
