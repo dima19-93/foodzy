@@ -49,7 +49,7 @@ jobs:
           docker stop new-apples || true
           docker rm new-apples || true
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
-        'EOF'
+        EOF
     - name: Start ZAP
       run: docker run -d --name security-site -p 8080:8080 -m 4g -v /home/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
 
