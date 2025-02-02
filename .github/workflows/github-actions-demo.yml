@@ -63,6 +63,7 @@ jobs:
       run: cat /home/zap_output/zap_out.json
     
     - name: Stop ZAP
-      run: docker stop security-site
+      run: docker stop security-site 
+      
     
  
