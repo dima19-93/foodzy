@@ -32,7 +32,7 @@ jobs:
     - name: Start ssh-agent
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIV_KEY }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Start ZAP
       run: docker run -d --name security-site -p 8080:8080 -m 4g -v /home/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
@@ -53,10 +53,10 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         SERVER_IP: ${{ secrets.SERVER_IP_ADD }}
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIV_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       
       run: |
-        echo "$SSH_PRIV_KEY" > id_rsa
+        echo "$SSH_PRIVATE_KEY" > id_rsa
         chmod 600 id_rsa
         ssh -tt -o StrictHostKeyChecking=no -i id_rsa adminserver@${{ secrets.SERVER_IP_ADD }} << 'EOF'
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
