@@ -50,7 +50,15 @@ jobs:
           docker rm new-apples || true &&
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         "
-    
+    - name: Create file zap.yaml
+      run: docker exec -it security-site bash -c "echo 'default' > /zap/wrk/zap.yaml"
+
+    - name: check creation file zap.yaml
+      run: docker exec -it security-site ls -la /zap/wrk/
+
+    - name: access rights to file zap.yaml
+      run: docker exec -it security-site chmod 777 /zap/wrk/zap.yaml
+      
     - name: Start ZAP
       run: docker run -d --name security-site -p 8080:8080  -v /home/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
 
