@@ -58,7 +58,7 @@ jobs:
       run: docker run --rm -v /tmp/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -j --auto
 
     - name: Check ZAP output
-      run: cat /tmp/zap_output/zap_out.json
+      run: cat /tmp/zap_output/zap.yaml
 
    
     
