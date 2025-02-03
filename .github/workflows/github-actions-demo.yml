@@ -56,6 +56,9 @@ jobs:
 
     - name: Wait for ZAP to start
       run: sleep 60
+    
+    - name: Change access rights to /zap/wrk/
+      run: docker exec security-site chmod 777 /zap/wrk/
 
     - name: Create file zap.yaml
       run: docker exec security-site bash -c "echo 'default' > /zap/wrk/zap.yaml"
