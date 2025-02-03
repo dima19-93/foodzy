@@ -58,13 +58,13 @@ jobs:
       run: sleep 60
 
     - name: Create file zap.yaml
-      run: docker exec -it security-site bash -c "echo 'default' > /zap/wrk/zap.yaml"
+      run: docker exec security-site bash -c "echo 'default' > /zap/wrk/zap.yaml"
 
     - name: Check creation file zap.yaml
-      run: docker exec -it security-site ls -la /zap/wrk/
+      run: docker exec security-site ls -la /zap/wrk/
 
     - name: Access rights to file zap.yaml
-      run: docker exec -it security-site chmod 777 /zap/wrk/zap.yaml
+      run: docker exec security-site chmod 777 /zap/wrk/zap.yaml
 
     - name: Run ZAP quick scan
       run: docker exec security-site zap-baseline.py -t https://apples.foodzy.pp.ua -J /zap/wrk/zap_out.json
