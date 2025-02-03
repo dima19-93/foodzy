@@ -51,6 +51,9 @@ jobs:
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         "
 
+    - name: Create directory zap_output on host
+      run: mkdir -p /home/zap_output
+    
     - name: Create file zap.yaml on host
       run: echo 'default' > /home/zap_output/zap.yaml
     
@@ -60,13 +63,6 @@ jobs:
     - name: Wait for ZAP to start
       run: sleep 60
 
-    - name: Change access rights to /zap/wrk/
-      run: docker exec security-site chmod 777 /zap/wrk/
-
-    - name: Change access rights to zap.yaml
-      run: docker exec security-site chmod 777 /zap/wrk/zap.yaml
-
-    
     - name: Run ZAP quick scan
       run: docker exec security-site zap-baseline.py -t https://apples.foodzy.pp.ua -J /zap/wrk/zap_out.json
     
