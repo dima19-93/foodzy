@@ -57,7 +57,7 @@ jobs:
       run: sleep 60
 
     - name: Run ZAP quick scan
-      run: docker exec security-site zap-baseline.py -t https://apples.foodzy.pp.ua -J /zap/wrk/zap_out.json
+      run: docker exec security-site zap-baseline.py -t https://apples.foodzy.pp.ua 
     
     - name: Check ZAP output
       run: cat /tmp/zap_output/zap_out.json
