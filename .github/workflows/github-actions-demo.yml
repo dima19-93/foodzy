@@ -51,8 +51,11 @@ jobs:
           docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         "
    
-    - name: Start ZAP
-      run: docker run -d --name security-site -p 8080:8080 -v /tmp/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap.sh -daemon -host 0.0.0.0 -port 8080
+    - name: Download ZAP
+      run: docker pull zaproxy/zap-stable
+
+    - name: Start Zap
+      run: docker run --rm -v /tmp/zap_output:/zap/wrk zaproxy/zap-stable zap-baseline.py -t https://apples.foodzy.pp.ua/ -I -j --auto
 
     - name: Wait for ZAP to start
       run: sleep 60
