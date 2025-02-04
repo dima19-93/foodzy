@@ -55,13 +55,8 @@ jobs:
       run: docker pull zaproxy/zap-stable
 
     - name: Start ZAP Baseline Scan
-      run: docker run --name zap_temp_container -v /home/adminserver/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -j --auto -J zap_out.json
+      run: docker run --rm -u 0 -v ~/zap_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -J --auto
 
-    - name: COPY zap_out.json
-      run: docker cp zap_temp_container:/zap/wrk/zap_out.json /home/adminserver/zap_output/zap_out.json
-
-    - name: Delete container
-      run: docker rm zap_temp_container
 
  
 
