@@ -55,11 +55,8 @@ jobs:
       run: docker pull zaproxy/zap-stable
 
     - name: Start ZAP Baseline Scan
-      run: docker run --rm -u 0 -v ~/zap_temp_output:/zap/wrk ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://apples.foodzy.pp.ua -J /zap/wrk/zap_out.json -I
+      run: docker run --rm ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -j --auto ~/zap_output/zap_out.json
       
-    - name: Move ZAP output to final location
-      run: mv ~/zap_temp_output/zap_out.json ~/zap_output/zap_out.json
-    
     - name: Check ZAP output
       run: cat ~/zap_output/zap_out.json
 
