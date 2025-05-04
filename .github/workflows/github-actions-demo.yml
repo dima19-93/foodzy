@@ -58,7 +58,7 @@ jobs:
       run: docker run --rm -u 0 -v ~/zap_output:/zap/wrk zaproxy/zap-stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -J --auto 
 
 
- 
+  
 
     
    
