@@ -14,7 +14,7 @@ ARG PRIVKEY_PEM
 
 RUN echo "$FULLCHAIN_PEM" | sed 's/\\n/\n/g' > /etc/nginx/ssl/fullchain.pem && \
     openssl x509 -in /etc/nginx/ssl/fullchain.pem -noout || (echo "❌ Сертифікат пошкоджений" && exit 1)
-    printf "%s\n" "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
+RUN echo "$PRIVKEY_PEM" | sed 's/\\n/\n/g' > /etc/nginx/ssl/privkey.pem
 # Скопируйте конфигурационный файл Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
