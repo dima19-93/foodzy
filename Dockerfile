@@ -13,8 +13,8 @@ ARG FULLCHAIN_PEM
 ARG PRIVKEY_PEM
 
 RUN mkdir -p /etc/nginx/ssl && \
-    echo "FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
-    echo "PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
+    printf "%s\n" "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
+    printf "%s\n" "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
 # Скопируйте конфигурационный файл Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
