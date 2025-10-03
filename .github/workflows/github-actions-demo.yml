@@ -22,22 +22,21 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
+    - name: Build and Docker image with SSL args
       uses: docker/build-push-action@v3
       with:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+        build-args: |
+           FULLCHAIN_PEM=${{ secrets.FULLCHAIN_PEM }}
+           PRIVKEY_PEM=${{ secrets.PRIVKEY_PEM }}
     
     - name: Start ssh-agent
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    - name: Create SSL files
-      run: |
-        mkdir -p ssl
-        echo "${{ secrets.FULLCHAIN_PEM }}" > ssl/fullchain.pem
-        echo "${{ secrets.PRIVKEY_PEM }}" > ssl/privkey.pem
+    
   
     - name: Deploy to server
       env:
