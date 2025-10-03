@@ -33,7 +33,11 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+    - name: Create SSL files
+      run: |
+        mkdir -p ssl
+        echo "${{ secrets.FULLCHAIN_PEM }}" > ssl/fullchain.pem
+        echo "${{ secrets.PRIVKEY_PEM }}" > ssl/privkey.pem
   
     - name: Deploy to server
       env:
