@@ -24,8 +24,8 @@ jobs:
     
     - name: Розшифрувати SSL-файли з секретів
       run: |
-        echo "${{ secrets.FULLCHAIN_PEM_b64 }}" | base64 -d > fullchain.pem
-        echo "${{ secrets.PRIVKEY_PEM_b64 }}" | base64 -d > privkey.pem
+        echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | base64 -d > fullchain.pem
+        echo "${{ secrets.PRIVKEY_PEM_B64 }}" | base64 -d > privkey.pem
 
     - name: Build and Docker image with SSL args
       uses: docker/build-push-action@v3
