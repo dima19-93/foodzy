@@ -11,6 +11,10 @@ RUN mkdir -p /etc/nginx/ssl && \
     head -n 1 /etc/nginx/ssl/fullchain.pem && \
     head -n 1 /etc/nginx/ssl/privkey.pem
 
+RUN test -s /etc/nginx/ssl/fullchain.pem || (echo "fullchain.pem is empty!" && exit 1) && \
+    test -s /etc/nginx/ssl/privkey.pem || (echo "privkey.pem is empty!" && exit 1)
+
+
 #Копіювання index.html
 COPY index.html /usr/share/nginx/html
 
