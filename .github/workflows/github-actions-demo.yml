@@ -28,8 +28,8 @@ jobs:
     
     - name: Декодувати PEM-файли
       run: |
-        base64 -d fullchain.pem.B64 > fullchain.pem
-        base64 -d privkey.pem.B64 > privkey.pem
+        base64 -d fullchain.pem.b64 > fullchain.pem
+        base64 -d privkey.pem.b64 > privkey.pem
 
     
     - name: Validate PEM files
