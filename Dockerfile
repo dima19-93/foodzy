@@ -8,8 +8,8 @@ ARG PRIVKEY_PEM
 RUN mkdir -p /etc/nginx/ssl
 
 # Запис сертифікатів у файли
-RUN printf "%s" "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
-    printf "%s" "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
+RUN echo -e "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem
+    echo -e "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
 
 #Копіювання index.html
 COPY index.html /usr/share/nginx/html
