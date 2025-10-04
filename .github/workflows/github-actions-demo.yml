@@ -27,6 +27,25 @@ jobs:
         echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | base64 -d > fullchain.pem
         echo "${{ secrets.PRIVKEY_PEM_B64 }}" | base64 -d > privkey.pem
 
+    - name: Перевірка PEM-файлів
+      run: |
+        echo "Перевірка fullchain.pem:"
+        echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | base64 -d > fullchain.pem
+        openssl x509 -in fullchain.pem -text -noout || (echo "fullchain.pem пошкоджений" && exit 1)
+
+        echo "Перевірка privkey.pem:"
+        echo "${{ secrets.PRIVKEY_PEM_B64 }}" | base64 -d > privkey.pem
+        openssl rsa -in privkey.pem -check || (echo "privkey.pem пошкоджений" && exit 1)
+
+        echo "PEM-файли валідні"
+   
+    - name: Перевірка довжини секретів
+      run: |
+       echo "FULLCHAIN_PEM_B64 length: $(echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | wc -c)"
+       echo "PRIVKEY_PEM_B64 length: $(echo "${{ secrets.PRIVKEY_PEM_B64 }}" | wc -c)"
+
+
+
     - name: Build and Docker image with SSL args
       uses: docker/build-push-action@v3
       with:
