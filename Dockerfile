@@ -1,13 +1,13 @@
 FROM nginx:latest
 
 # Аргументи для сертифікатів
-ARG FULLCHAIN_PEM
-ARG PRIVKEY_PEM
+ARG FULLCHAIN_PEM_b64
+ARG PRIVKEY_PEM_b64
 
 # Створення директорії для SSL
 RUN mkdir -p /etc/nginx/ssl && \
-    printf "%s" "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
-    printf "%s" "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
+    echo "$FULLCHAIN_PEM_b64" | base64 -d > /etc/nginx/ssl/fullchain.pem && \
+    echo "$PRIVKEY_PEM_b64" | base64 -d > /etc/nginx/ssl/privkey.pem
 
 
 #Копіювання index.html
