@@ -1,15 +1,18 @@
 FROM nginx:latest
 
-# Скопируйте индексный файл
-COPY index.html /usr/share/nginx/html
+# Аргументи для сертифікатів
+ARG FULLCHAIN_PEM
+ARG PRIVKEY_PEM
 
-# Создайте директорию для сертификатов в контейнере
+# Створення директорії для SSL
 RUN mkdir -p /etc/nginx/ssl
 
-# Скопируйте сертификаты в контейнер
-COPY .docker/ssl/fullchain.pem /etc/nginx/ssl/fullchain.pem
-COPY .docker/ssl/privkey.pem /etc/nginx/ssl/privkey.pem
+# Запис сертифікатів у файли
+RUN printf "%s" "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
+    printf "%s" "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
 
+#Копіювання index.html
+COPY index.html /usr/share/nginx/html
 
 # Скопируйте конфигурационный файл Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
