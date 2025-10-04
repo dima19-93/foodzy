@@ -23,18 +23,19 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Записати секрети у файл
       run: |
-        echo "${{ secrets.FULLCHAIN_PEM_B64 }}" > fullchain.pem.B64
-        echo "${{ secrets.PRIVKEY_PEM_B64 }}" > privkey.pem.B64
+       printf "%s" "${{ secrets.FULLCHAIN_PEM_B64 }}" > fullchain.pem.b64
+       printf "%s" "${{ secrets.PRIVKEY_PEM_B64 }}" > privkey.pem.b64
+    
     - name: Декодувати PEM-файли
       run: |
-        base64 -d fullchain.pem.b64 > fullchain.pem
-        base64 -d privkey.pem.b64 > privkey.pem
+        base64 -d fullchain.pem.B64 > fullchain.pem
+        base64 -d privkey.pem.B64 > privkey.pem
 
     
     - name: Validate PEM files
       run: |
-        openssl x509 -in fullchain.pem -text -noout || (echo "❌ fullchain.pem пошкоджений" && exit 1)
-        openssl rsa -in privkey.pem -check || (echo "❌ privkey.pem пошкоджений" && exit 1)
+        openssl x509 -in fullchain.pem -text -noout || (echo "fullchain.pem пошкоджений" && exit 1)
+        openssl rsa -in privkey.pem -check || (echo "privkey.pem пошкоджений" && exit 1)
 
     - name: Build Docker image
       uses: docker/build-push-action@v3
