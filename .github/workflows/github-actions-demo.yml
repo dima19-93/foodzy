@@ -29,8 +29,8 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         build-args: |
-           FULLCHAIN_PEM=${{ secrets.FULLCHAIN_PEM }}
-           PRIVKEY_PEM=${{ secrets.PRIVKEY_PEM }}
+           FULLCHAIN_PEM_b64=${{ secrets.FULLCHAIN_PEM_b64 }}
+           PRIVKEY_PEM_b64=${{ secrets.PRIVKEY_PEM_b64 }}
     
     - name: Start ssh-agent
       uses: webfactory/ssh-agent@v0.5.3
