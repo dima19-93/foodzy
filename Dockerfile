@@ -4,6 +4,8 @@ FROM nginx:latest
 ARG FULLCHAIN_PEM_B64
 ARG PRIVKEY_PEM_B64
 
+RUN mkdir -p /etc/nginx/ssl 
+
 # Копіювання SSL-файлів
 COPY fullchain.pem /etc/nginx/ssl/fullchain.pem
 COPY privkey.pem /etc/nginx/ssl/privkey.pem
