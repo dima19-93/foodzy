@@ -21,12 +21,16 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Decode SSL files from secrets
+    - name: Записати секрети у файл
       run: |
-        echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | base64 -d > fullchain.pem
-        echo "${{ secrets.PRIVKEY_PEM_B64 }}" | base64 -d > privkey.pem
+        echo "${{ secrets.FULLCHAIN_PEM_B64 }}" > fullchain.pem.B64
+        echo "${{ secrets.PRIVKEY_PEM_B64 }}" > privkey.pem.B64
+    - name: Декодувати PEM-файли
+      run: |
+        base64 -d fullchain.pem.b64 > fullchain.pem
+        base64 -d privkey.pem.b64 > privkey.pem
 
+    
     - name: Validate PEM files
       run: |
         openssl x509 -in fullchain.pem -text -noout || (echo "❌ fullchain.pem пошкоджений" && exit 1)
