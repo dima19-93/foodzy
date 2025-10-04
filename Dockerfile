@@ -6,8 +6,10 @@ ARG PRIVKEY_PEM_b64
 
 # Створення директорії для SSL
 RUN mkdir -p /etc/nginx/ssl && \
-    echo "$FULLCHAIN_PEM_b64" | base64 -d > /etc/nginx/ssl/fullchain.pem && \
-    echo "$PRIVKEY_PEM_b64" | base64 -d > /etc/nginx/ssl/privkey.pem
+    printf "%s" "$FULLCHAIN_PEM_b64" | base64 -d > /etc/nginx/ssl/fullchain.pem && \
+    printf "%s" "$PRIVKEY_PEM_b64" | base64 -d > /etc/nginx/ssl/privkey.pem
+RUN openssl x509 -in /etc/nginx/ssl/fullchain.pem -text -noout || (echo "Invalid fullchain.pem" && exit 1)
+RUN openssl rsa -in /etc/nginx/ssl/privkey.pem -check || (echo "Invalid privkey.pem" && exit 1)
 
 
 #Копіювання index.html
