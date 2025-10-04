@@ -6,13 +6,8 @@ ARG PRIVKEY_PEM
 
 # Створення директорії для SSL
 RUN mkdir -p /etc/nginx/ssl && \
-    printf "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
-    printf "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem && \
-    head -n 1 /etc/nginx/ssl/fullchain.pem && \
-    head -n 1 /etc/nginx/ssl/privkey.pem
-
-RUN test -s /etc/nginx/ssl/fullchain.pem || (echo "fullchain.pem is empty!" && exit 1) && \
-    test -s /etc/nginx/ssl/privkey.pem || (echo "privkey.pem is empty!" && exit 1)
+    printf "%s" "$FULLCHAIN_PEM" > /etc/nginx/ssl/fullchain.pem && \
+    printf "%s" "$PRIVKEY_PEM" > /etc/nginx/ssl/privkey.pem
 
 
 #Копіювання index.html
