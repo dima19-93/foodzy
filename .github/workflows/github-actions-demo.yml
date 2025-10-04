@@ -1,17 +1,17 @@
 name: Deploy Website
 
-on: 
+on:
   push:
     branches:
       - main
-  
+
 jobs:
   deploy:
-    runs-on: ubuntu-22.04 
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3 
+      uses: actions/checkout@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -21,73 +21,43 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Розшифрувати SSL-файли з секретів
+
+    - name: Decode SSL files from secrets
       run: |
         echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | base64 -d > fullchain.pem
         echo "${{ secrets.PRIVKEY_PEM_B64 }}" | base64 -d > privkey.pem
 
-    - name: Перевірка PEM-файлів
+    - name: Validate PEM files
       run: |
-        echo "Перевірка fullchain.pem:"
-        echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | base64 -d > fullchain.pem
-        openssl x509 -in fullchain.pem -text -noout || (echo "fullchain.pem пошкоджений" && exit 1)
+        openssl x509 -in fullchain.pem -text -noout || (echo "❌ fullchain.pem пошкоджений" && exit 1)
+        openssl rsa -in privkey.pem -check || (echo "❌ privkey.pem пошкоджений" && exit 1)
 
-        echo "Перевірка privkey.pem:"
-        echo "${{ secrets.PRIVKEY_PEM_B64 }}" | base64 -d > privkey.pem
-        openssl rsa -in privkey.pem -check || (echo "privkey.pem пошкоджений" && exit 1)
-
-        echo "PEM-файли валідні"
-   
-    - name: Перевірка довжини секретів
-      run: |
-       echo "FULLCHAIN_PEM_B64 length: $(echo "${{ secrets.FULLCHAIN_PEM_B64 }}" | wc -c)"
-       echo "PRIVKEY_PEM_B64 length: $(echo "${{ secrets.PRIVKEY_PEM_B64 }}" | wc -c)"
-
-
-
-    - name: Build and Docker image with SSL args
+    - name: Build Docker image
       uses: docker/build-push-action@v3
       with:
         context: .
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
-        
-    
+
+    - name: Clean up PEM files
+      run: rm fullchain.pem privkey.pem
+
     - name: Start ssh-agent
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-    
-  
+
     - name: Deploy to server
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         SERVER_IP: ${{ secrets.SERVER_IP_ADD }}
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      
       run: |
-       echo "$SSH_PRIVATE_KEY" > id_rsa
-       chmod 600 id_rsa
-       ssh -tt -o StrictHostKeyChecking=no -i id_rsa azureuser@${{ secrets.SERVER_IP_ADD }} "
-          docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest &&
+        ssh -tt -o StrictHostKeyChecking=no azureuser@${{ secrets.SERVER_IP_ADD }} "
+          docker pull $DOCKER_USERNAME/foodzy:latest &&
           docker stop new-apples || true &&
           docker rm new-apples || true &&
-          docker run -d --name new-apples -p 80:80 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+          docker run -d --name new-apples -p 80:80 -p 443:443 $DOCKER_USERNAME/foodzy:latest
         "
-   
-    - name: Download ZAP
-      run: docker pull zaproxy/zap-stable
 
     - name: Start ZAP Baseline Scan
-      run: docker run --rm -u 0 -v ~/zap_output:/zap/wrk zaproxy/zap-stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -J --auto  
-
-
-   
-  
-    
-     
-  
-    
-     
- 
+      run: docker run --rm -u 0 -v ~/zap_output:/zap/wrk zaproxy/zap-stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -J --auto
