@@ -29,8 +29,8 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         build-args: |
-          - FULLCHAIN_PEM=${{ secrets.FULLCHAIN_PEM }}
-          - PRIVKEY_PEM=${{ secrets.PRIVKEY_PEM }}
+           FULLCHAIN_PEM=${{ secrets.FULLCHAIN_PEM }}
+           PRIVKEY_PEM=${{ secrets.PRIVKEY_PEM }}
     
     - name: Start ssh-agent
       uses: webfactory/ssh-agent@v0.5.3
@@ -51,14 +51,14 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/foodzy:latest &&
           docker stop new-apples || true &&
           docker rm new-apples || true &&
-          docker run -d --name new-apples -p 80:80 -p 443:443 -v /diplom_work/ssl:/etc/ssl -v /diplom_work/ssl/fullchain.pem:/etc/ssl/certs/fullchain.pem ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
+          docker run -d --name new-apples -p 80:80 -p 443:443 ${{ secrets.DOCKER_USERNAME }}/foodzy:latest
         "
    
     - name: Download ZAP
       run: docker pull zaproxy/zap-stable
 
     - name: Start ZAP Baseline Scan
-      run: docker run --rm -u 0 -v ~/zap_output:/zap/wrk zaproxy/zap-stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -J --auto 
+      run: docker run --rm -u 0 -v ~/zap_output:/zap/wrk zaproxy/zap-stable zap-baseline.py -t https://apples.foodzy.pp.ua -I -J --auto  
 
 
    
