@@ -1,5 +1,9 @@
 FROM nginx:latest
 
+# Аргументи для сертифікатів
+ARG FULLCHAIN_PEM_B64
+ARG PRIVKEY_PEM_B64
+
 # Копіювання SSL-файлів
 COPY fullchain.pem /etc/nginx/ssl/fullchain.pem
 COPY privkey.pem /etc/nginx/ssl/privkey.pem
