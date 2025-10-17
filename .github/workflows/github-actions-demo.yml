@@ -51,7 +51,7 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         SERVER_IP: ${{ secrets.SERVER_IP_ADD }}
       run: |
-        ssh -tt -o StrictHostKeyChecking=no azureuser@${{ secrets.SERVER_IP_ADD }} "
+        ssh -tt -o StrictHostKeyChecking=no dimasimko260@${{ secrets.SERVER_IP_ADD }} "
           docker pull $DOCKER_USERNAME/foodzy:latest &&
           docker stop new-apples || true &&
           docker rm new-apples || true &&
